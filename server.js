@@ -1,8 +1,8 @@
 const express = require("express");
 const TelegramBot = require("node-telegram-bot-api");
-const token = "6214124878:AAGFFNSs1Kng4K1syskjxK9eEvyvPV9tMak";
+// const token = "6214124878:AAGFFNSs1Kng4K1syskjxK9eEvyvPV9tMak";
 
-// const token = "6212119379:AAEi1kYrKksfMziyfd_p7B7E203sniB09Gg";
+const token = "6212119379:AAEi1kYrKksfMziyfd_p7B7E203sniB09Gg";
 const mongoose = require("mongoose");
 const ejs = require("ejs");
 
@@ -43,9 +43,6 @@ app.get("/", (req, res) => {
   res.render("index", { options: {} });
 });
 
-// Handle the /start command
-
-// Handle callback queries
 bot.on("callback_query", async (query) => {
   const { chat, message_id, text } = query.message;
 
@@ -69,8 +66,19 @@ bot.on("message", async (msg) => {
     try {
       const listKeo = await KeoToday.find()
         .sort({ createDate: -1 })
-        .limit(3)
+        .limit(4)
         .then((result) => {
+          bot.sendMessage(
+            chatId,
+            "Nhận full kèo tại nhóm vip . Đăng kí tài link: https://tk888.org/?proxy=link14,\n\n IB CHO TELEGRAM : https://t.me/phuongduypro",
+            {
+              reply_markup: {
+                keyboard: [["/start"]],
+                resize_keyboard: true,
+                one_time_keyboard: true,
+              },
+            }
+          );
           const result1 = JSON.stringify(result);
           const result2 = JSON.parse(result1);
 
@@ -89,25 +97,20 @@ bot.on("message", async (msg) => {
     } catch (err) {
       console.error(err.message);
     }
-
-    bot.sendMessage(
-      chatId,
-      "Nhận full kèo tại nhóm vip . Đăng kí tài link: https://tk888.org/?proxy=link14,\n\n IB CHO TELEGRAM : https://t.me/phuongduypro",
-      {
-        reply_markup: {
-          keyboard: [["/start"]],
-          resize_keyboard: true,
-          one_time_keyboard: true,
-        },
-      }
-    );
   }
 });
 
 app.post("/", async (req, res) => {
   try {
-    const { textKeoTX, textKeoChap, doi1, doi2, keoTX, keoChap, text } =
-      req.body;
+    const {
+      textKeoTX = "",
+      textKeoChap = "",
+      doi1 = "",
+      doi2 = "",
+      keoTX = "",
+      keoChap = "",
+      text = "",
+    } = req.body;
 
     const newData = new KeoToday({
       createDate: new Date(),
