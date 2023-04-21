@@ -10,13 +10,16 @@ const keoToday = new mongoose.Schema({
   callback_data: {
     type: String,
   },
-  data1: {
+  doi1: {
     type: String,
   },
-  data2: {
+  doi2: {
     type: String,
   },
   keoTX: {
+    type: String,
+  },
+  keoChap: {
     type: String,
   },
   createDate: {

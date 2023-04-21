@@ -46,3 +46,9 @@ form > div {
   margin: 10px auto;
   text-align: center;
 }
+.ghi-chu {
+  font-size: 40px;
+  color: red;
+  text-transform: uppercase;
+  font-weight: bold;
+}

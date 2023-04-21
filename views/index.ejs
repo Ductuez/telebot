@@ -1,41 +1,57 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Document List</title>
+    <title>Kèo bóng bot</title>
     <link rel="stylesheet" href="/css/style.css">
   </head>
   <body>
-    <!-- <h1>Document List</h1>
-    <ul>
-      <% options.forEach(function(doc) { %>
-        <li><%= doc.text %> - <%= doc.data1 %> - <%= doc.data2 %></li>
-      <% }); %>
-    </ul> -->
+  
 
     <form action="/" method="POST">
       <div>
-        <label for="name">textKeoTX</label>
-        <input type="text" id="name" name="textKeoTX" required>
+        <label for="name">Text kèo tài xỉu</label>
+        <input type="text" id="name" name="textKeoTX" >
       </div>
       <div>
-        <label for="textKeoChap">textKeoChap</label>
-        <input type="text" id="textKeoChap" name="textKeoChap" required>
+        <label for="textKeoChap">Text kèo chấp</label>
+        <input type="text" id="textKeoChap" name="textKeoChap" >
       </div>
       <div>
-        <label for="data1">data1:</label>
-        <input type="text" id="data1" name="data1" required>
+        <label for="keoTX">Kèo tài xỉu</label>
+        <input type="text" id="keoTX" name="keoTX" >
       </div>
       <div>
-        <label for="data2">data2:</label>
-        <input type="text" id="data2" name="data2" required>
+        <label for="keoChap">Kèo Chấp</label>
+        <input type="text" id="keoChap" name="keoChap" >
       </div>
       <div>
-        <label for="keoTX">keoTX</label>
-        <input type="text" id="keoTX" name="keoTX" required>
-      </div>
-      <div>
+        <div>
+          <label for="data1">Đội 1:</label>
+          <input type="text" id="data1" name="doi1" >
+        </div>
+        <div>
+          <label for="data2">Đội 2</label>
+          <input type="text" id="data2" name="doi2" required>
+        </div>
         <button type="submit">Submit</button>
       </div>
     </form>
+    <br />
+    <br />
+
+    <div>
+      <% if (options) { %>
+        <p>Text kèo tài xỉu: <%= options.textKeoTX %></p>
+        <p>Text kèo chấp: <%= options.textKeoChap %></p>
+        <p>Kèo Chấp: <%= options.keoChap %></p>
+        <p>Kèo Tài xỉu: <%= options.keoTX %></p>
+        <p>Đội 1: <%= options.doi1 %></p>
+        <p>Đội 2: <%= options.doi2 %></p>
+      <% } %>
+    </div>
+
+    <div class="ghi-chu">
+      KHI GHI ĐỘI 1 luôn luôn là kèo trên
+    </div>
   </body>
 </html>

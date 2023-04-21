@@ -1,6 +1,8 @@
 const express = require("express");
 const TelegramBot = require("node-telegram-bot-api");
-const token = "6214124878:AAGFFNSs1Kng4K1syskjxK9eEvyvPV9tMak";
+// const token = "6214124878:AAGFFNSs1Kng4K1syskjxK9eEvyvPV9tMak";
+
+const token = "5899759909:AAEmOwbhumfKx5gZkdG9td5j5ETPSEQGrjI";
 const mongoose = require("mongoose");
 const ejs = require("ejs");
 
@@ -83,18 +85,25 @@ var keyboard = {
 };
 
 app.get("/", (req, res) => {
-  console.log(options);
   res.render("index", { options });
 });
 
 // Handle the /start command
-bot.onText(/\/start/, (msg) => {
-  bot.sendMessage(msg.chat.id, "Bạn muốn hỏi kèo nào: ", {
-    reply_markup: JSON.stringify(keyboard),
-  });
+bot.onText(/\/start/, async (msg) => {
+  try {
+    const listKeo = await KeoToday.find({});
 
-  if (!listChatID.includes(msg.chat.id)) {
-    listChatID.push(msg.chat.id);
+    console.log(listKeo);
+    // bot.sendMessage(msg.chat.id, "Bạn muốn hỏi kèo nào: ", {
+    //   reply_markup: JSON.stringify(listKeoTuyChinh),
+    // });
+
+    // if (!listChatID.includes(msg.chat.id)) {
+    //   listChatID.push(msg.chat.id);
+    // }
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
   }
 });
 
@@ -102,8 +111,6 @@ bot.onText(/\/start/, (msg) => {
 bot.on("callback_query", (query) => {
   const { chat, message_id, text } = query.message;
   const option = options.find((option) => option.callback_data === query.data);
-
-  console.log(option);
 
   bot.editMessageText(
     `${text}\n\n"${option.text}", kèo hôm nay   ${option.data1} chấp ${option.data2} 10 trái, chọn kèo ${option.data2}`,
@@ -134,13 +141,22 @@ bot.on("message", (msg) => {
 
 app.post("/", async (req, res) => {
   try {
-    // const newData = new KeoToday(req.body.data[0]);
+    const { textKeoTX, textKeoChap, doi1, doi2, keoTX, keoChap } = req.body;
 
-    // const a = await newData.save();
+    const newData = new KeoToday({
+      createDate: new Date(),
+      textKeoTX,
+      textKeoChap,
+      doi1,
+      doi2,
+      keoTX,
+      keoChap,
+    });
 
-    console.log(req.body);
-
-    res.render("index", { options });
+    const a = await newData.save().then((result) => {
+      console.log(result, "result");
+      res.render("index", { options: result });
+    });
   } catch (err) {
     console.error(`Error inserting data: ${err.message}`);
     res.status(500).send(`Error inserting data: ${err.message}`);
@@ -150,7 +166,6 @@ app.post("/", async (req, res) => {
 app.get("/listKeo", async (req, res) => {
   try {
     const listKeo = await KeoToday.find({});
-    console.log(listKeo);
     res.send(listKeo);
   } catch (err) {
     console.error(err.message);
