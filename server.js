@@ -43,6 +43,29 @@ app.get("/", (req, res) => {
   res.render("index", { options: {} });
 });
 
+app.get("/edit", async (req, res) => {
+  KeoToday.find({}, (err, docs) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.render("edit", { options: docs });
+    }
+  });
+});
+
+app.post("/delete/:id", function (req, res) {
+  const id = req.params.id;
+  KeoToday.findByIdAndRemove(id, function (err) {
+    if (err) {
+      console.log("Error deleting item with ID:", id, err);
+      res.send("Error deleting item");
+    } else {
+      console.log("Successfully deleted item with ID:", id);
+      res.redirect("/");
+    }
+  });
+});
+
 bot.on("callback_query", async (query) => {
   const { chat, message_id, text } = query.message;
 

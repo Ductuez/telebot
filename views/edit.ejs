@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Kèo bóng bot</title>
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body>
+  
+    <ul>
+      <% options.forEach(function(option, i) { %>
+        <li>
+          <%= option.text %> kèo <%= option.keoTX %> 
+          <span class="delete-button" onclick="deleteOption('<%= option._id %>')">Xóa</span>
+        </li>
+      <% }); %>
+    </ul>
+    
+    <script>
+      function deleteOption(id) {
+        if (confirm("Bạn có chắc chắn muốn xóa mục này không?")) {
+          fetch(`/delete/${id}`, {
+            method: "POST"
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log(data);
+            location.reload(); // tải lại trang sau khi xóa thành công
+          })
+          .catch(error => console.error(error));
+        }
+      }
+    </script>
+    
+  </body>
+</html>
