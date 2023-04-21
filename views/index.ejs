@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Document List</title>
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body>
+    <!-- <h1>Document List</h1>
+    <ul>
+      <% options.forEach(function(doc) { %>
+        <li><%= doc.text %> - <%= doc.data1 %> - <%= doc.data2 %></li>
+      <% }); %>
+    </ul> -->
+
+    <form action="/" method="POST">
+      <div>
+        <label for="name">textKeoTX</label>
+        <input type="text" id="name" name="textKeoTX" required>
+      </div>
+      <div>
+        <label for="textKeoChap">textKeoChap</label>
+        <input type="text" id="textKeoChap" name="textKeoChap" required>
+      </div>
+      <div>
+        <label for="data1">data1:</label>
+        <input type="text" id="data1" name="data1" required>
+      </div>
+      <div>
+        <label for="data2">data2:</label>
+        <input type="text" id="data2" name="data2" required>
+      </div>
+      <div>
+        <label for="keoTX">keoTX</label>
+        <input type="text" id="keoTX" name="keoTX" required>
+      </div>
+      <div>
+        <button type="submit">Submit</button>
+      </div>
+    </form>
+  </body>
+</html>
