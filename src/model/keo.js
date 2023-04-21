@@ -25,6 +25,12 @@ const keoToday = new mongoose.Schema({
   createDate: {
     type: Date,
   },
+  callback_data: {
+    type: String,
+  },
+  text: {
+    type: String,
+  },
 });
 
 const KeoToday = mongoose.model("keoToDay", keoToday);

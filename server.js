@@ -1,8 +1,8 @@
 const express = require("express");
 const TelegramBot = require("node-telegram-bot-api");
-// const token = "6214124878:AAGFFNSs1Kng4K1syskjxK9eEvyvPV9tMak";
+const token = "6214124878:AAGFFNSs1Kng4K1syskjxK9eEvyvPV9tMak";
 
-const token = "5899759909:AAEmOwbhumfKx5gZkdG9td5j5ETPSEQGrjI";
+// const token = "6212119379:AAEi1kYrKksfMziyfd_p7B7E203sniB09Gg";
 const mongoose = require("mongoose");
 const ejs = require("ejs");
 
@@ -40,22 +40,39 @@ connectDB();
 var listChatID = [];
 var options = [
   {
-    text: "Chelsea vs MU",
-    callback_data: "1",
-    data1: "Chelsea",
-    data2: "MU",
+    textKeoTX: "đây là text kèo tài xỉu",
+    textKeoChap: "đây là text kèo  kèo chấp",
+    doi1: "Đội 1: ",
+    doi2: "Đội 2 ",
+    keoTX: "2.5",
+    keoChap: "2.0",
+    createDate: "2023-04-21T13:15:08.405Z",
+    text: "11313",
+    __v: 0,
   },
   {
-    text: "Manchester City vs Duy",
-    callback_data: "2",
-    data1: "Manchester City",
-    data2: "Duy",
+    textKeoTX: "1",
+    textKeoChap: "2",
+    doi1: "5",
+    doi2: "7",
+    keoTX: "3",
+    keoChap: "4",
+    createDate: "2023-04-21T10:56:06.024Z",
+    text: "11313",
+
+    __v: 0,
   },
   {
-    text: "Chelsea vs MU 2",
-    callback_data: "3",
-    data1: "Chelsea",
-    data2: "MU 2",
+    textKeoTX: "1",
+    textKeoChap: "2",
+    doi1: "5",
+    doi2: "7",
+    keoTX: "3",
+    keoChap: "4",
+    createDate: "2023-04-21T10:55:37.424Z",
+    text: "11313",
+
+    __v: 0,
   },
 ];
 
@@ -63,22 +80,40 @@ var keyboard = {
   inline_keyboard: [
     [
       {
-        text: "Chelsea vs MU",
-        callback_data: "1",
-        data1: "Chelsea",
-        data2: "MU",
+        textKeoTX: "đây là text kèo tài xỉu",
+        textKeoChap: "đây là text kèo  kèo chấp",
+        doi1: "Đội 1: ",
+        doi2: "Đội 2 ",
+        keoTX: "2.5",
+        keoChap: "2.0",
+        createDate: "2023-04-21T13:15:08.405Z",
+        text: "11313",
+        __v: 0,
+        callback_data: "12",
       },
       {
-        text: "Manchester City vs Duy",
-        callback_data: "2",
-        data1: "Manchester City",
-        data2: "Duy",
+        textKeoTX: "1",
+        textKeoChap: "2",
+        doi1: "5",
+        doi2: "7",
+        keoTX: "3",
+        keoChap: "4",
+        createDate: "2023-04-21T10:56:06.024Z",
+        text: "11313",
+        callback_data: "12",
+        __v: 0,
       },
       {
-        text: "Chelsea vs MU 2",
-        callback_data: "3",
-        data1: "Chelsea",
-        data2: "MU 2",
+        textKeoTX: "1",
+        textKeoChap: "2",
+        doi1: "5",
+        doi2: "7",
+        keoTX: "3",
+        keoChap: "4",
+        createDate: "2023-04-21T10:55:37.424Z",
+        text: "11313",
+        callback_data: "12",
+        __v: 0,
       },
     ],
   ],
@@ -89,42 +124,53 @@ app.get("/", (req, res) => {
 });
 
 // Handle the /start command
-bot.onText(/\/start/, async (msg) => {
-  try {
-    const listKeo = await KeoToday.find({});
-
-    console.log(listKeo);
-    // bot.sendMessage(msg.chat.id, "Bạn muốn hỏi kèo nào: ", {
-    //   reply_markup: JSON.stringify(listKeoTuyChinh),
-    // });
-
-    // if (!listChatID.includes(msg.chat.id)) {
-    //   listChatID.push(msg.chat.id);
-    // }
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
-  }
-});
 
 // Handle callback queries
 bot.on("callback_query", (query) => {
   const { chat, message_id, text } = query.message;
-  const option = options.find((option) => option.callback_data === query.data);
 
-  bot.editMessageText(
-    `${text}\n\n"${option.text}", kèo hôm nay   ${option.data1} chấp ${option.data2} 10 trái, chọn kèo ${option.data2}`,
-    {
-      chat_id: chat.id,
-      message_id: message_id,
-    }
-  );
+  console.log(query);
+  // const option = options.find((option) => option.callback_data === query.data);
+
+  // bot.editMessageText(
+  //   `${text}\n\n"${option.keoChap}", kèo hôm nay   ${option.keoTX} chấp ${option.keoTX} 10 trái, chọn kèo ${option.keoTX}`,
+  //   {
+  //     chat_id: chat.id,
+  //     message_id: message_id,
+  //   }
+  // );
 });
 
-bot.on("message", (msg) => {
+bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
 
   if (msg.text === "/start") {
+    try {
+      const listKeo = await KeoToday.find()
+        .sort({ createDate: -1 })
+        .limit(3)
+        .then((result) => {
+          const result1 = JSON.stringify(result);
+          const result2 = JSON.parse(result1);
+
+          console.log(result);
+
+          const reply_markup = {
+            inline_keyboard: [result2],
+          };
+
+          bot.sendMessage(msg.chat.id, "Bạn muốn hỏi kèo nào: ", {
+            reply_markup,
+          });
+
+          if (!listChatID.includes(msg.chat.id)) {
+            listChatID.push(msg.chat.id);
+          }
+        });
+    } catch (err) {
+      console.error(err.message);
+    }
+
     bot.sendMessage(
       chatId,
       "Nhận full kèo tại nhóm vip . Đăng kí tài link: https://tk888.org/?proxy=link14,\n\n IB CHO TELEGRAM : https://t.me/phuongduypro",
@@ -151,10 +197,11 @@ app.post("/", async (req, res) => {
       doi2,
       keoTX,
       keoChap,
+      callback_data: new Date().getTime(),
+      text: textKeoTX + " " + textKeoChap,
     });
 
     const a = await newData.save().then((result) => {
-      console.log(result, "result");
       res.render("index", { options: result });
     });
   } catch (err) {
