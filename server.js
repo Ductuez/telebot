@@ -1,8 +1,8 @@
 const express = require("express");
 const TelegramBot = require("node-telegram-bot-api");
-const token = "6214124878:AAGFFNSs1Kng4K1syskjxK9eEvyvPV9tMak";
+// const token = "6214124878:AAGFFNSs1Kng4K1syskjxK9eEvyvPV9tMak";
 
-// const token = "6212119379:AAEi1kYrKksfMziyfd_p7B7E203sniB09Gg";
+const token = "6212119379:AAEi1kYrKksfMziyfd_p7B7E203sniB09Gg";
 const mongoose = require("mongoose");
 const ejs = require("ejs");
 
@@ -106,7 +106,8 @@ bot.on("message", async (msg) => {
 
 app.post("/", async (req, res) => {
   try {
-    const { textKeoTX, textKeoChap, doi1, doi2, keoTX, keoChap } = req.body;
+    const { textKeoTX, textKeoChap, doi1, doi2, keoTX, keoChap, text } =
+      req.body;
 
     const newData = new KeoToday({
       createDate: new Date(),
@@ -117,7 +118,7 @@ app.post("/", async (req, res) => {
       keoTX,
       keoChap,
       callback_data: new Date().getTime(),
-      text: textKeoTX + " " + textKeoChap,
+      text,
     });
 
     const a = await newData.save().then((result) => {
