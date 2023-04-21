@@ -40,7 +40,7 @@ connectDB();
 var listChatID = [];
 
 app.get("/", (req, res) => {
-  res.render("index");
+  res.render("index", { options: {} });
 });
 
 // Handle the /start command
