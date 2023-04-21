@@ -55,8 +55,6 @@ bot.on("callback_query", async (query) => {
     .then((result) => {
       const option = result.find((item) => item.callback_data === query.data);
 
-      console.log(text);
-
       bot.editMessageText(`${option.textKeoChap}  \n\n ${option.textKeoTX}`, {
         chat_id: chat.id,
         message_id: message_id,
