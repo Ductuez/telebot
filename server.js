@@ -57,13 +57,10 @@ bot.on("callback_query", async (query) => {
 
       console.log(text);
 
-      bot.editMessageText(
-        `${text}\n\n"${option.callback_data}", kèo hôm nay   ${option.textKeoChap} chấp ${option.textKeoChap} 10 trái, chọn kèo ${option.textKeoChap}`,
-        {
-          chat_id: chat.id,
-          message_id: message_id,
-        }
-      );
+      bot.editMessageText(`${option.textKeoChap}  \n\n ${option.textKeoTX}`, {
+        chat_id: chat.id,
+        message_id: message_id,
+      });
     });
 });
 
