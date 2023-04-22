@@ -189,7 +189,7 @@ app.post("/text", async (req, res) => {
     console.log(listID);
 
     for (let i = 0; i < listID.length; i++) {
-      bot.sendMessage(listID[i], duLieu);
+      bot.sendMessage(listID[i], decodeURIComponent(duLieu));
     }
 
     res.render("index", { options: {} });
