@@ -40,6 +40,20 @@
         <button type="submit">Submit</button>
       </div>
     </form>
+
+
+    <div>
+      <a href="/edit">Qua Trang xóa</a>
+    </div>
+
+    <form>
+      <h3>Gửi tin nhắn</h3>
+      <div>
+        <label for="tinNhan">Tin nhắn</label>
+        <input type="text" id="tinNhan" name="tinNhan" required>
+      </div>
+      <button  type="button" onclick="guiTinNhan()">Gửi</button>
+    </form>
     <br />
     <br />
 
@@ -56,12 +70,36 @@
       <% } %>
     </div>
 
-    <div>
-      <a href="/edit">Qua Trang xóa</a>
-    </div>
+ 
 
     <div class="ghi-chu">
       KHI GHI ĐỘI 1 luôn luôn là kèo trên
     </div>
   </body>
+
+  <script>
+    function guiTinNhan(e) {
+    if (confirm("Bạn có chắc chắn muốn gửi tin nhắn này không?")) {
+    const tinNhan = document.getElementById("tinNhan").value;
+
+    fetch("/text", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        duLieu: tinNhan
+      })
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        location.reload();
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+}
+  </script>
 </html>

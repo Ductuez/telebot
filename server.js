@@ -9,6 +9,7 @@ const ejs = require("ejs");
 const url =
   "mongodb+srv://tuehd:0917977835aa@cluster0.r5mdp.mongodb.net/?retryWrites=true&w=majority";
 const KeoToday = require("./src/model/keo");
+const ListChatID = require("./src/model/listIDChat");
 
 const bot = new TelegramBot(token, { polling: true });
 const app = express();
@@ -36,8 +37,6 @@ const connectDB = () => {
 };
 
 connectDB();
-
-var listChatID = [];
 
 app.get("/", (req, res) => {
   res.render("index", { options: {} });
@@ -82,8 +81,28 @@ bot.on("callback_query", async (query) => {
     });
 });
 
+const themChatID = async (chatId) => {
+  try {
+    const doc = await ListChatID.findOne({ chatID: chatId });
+
+    if (doc) {
+      console.log(`Chat ID '${chatId}' đã tồn tại trong cơ sở dữ liệu`);
+      return doc;
+    } else {
+      const newDoc = new ListChatID({ chatID: chatId });
+      await newDoc.save();
+      console.log(`Thêm chat ID '${chatId}' vào cơ sở dữ liệu thành công`);
+      return newDoc;
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
+  themChatID(chatId);
 
   if (msg.text === "/start") {
     try {
@@ -150,6 +169,30 @@ app.post("/", async (req, res) => {
     const a = await newData.save().then((result) => {
       res.render("index", { options: result });
     });
+  } catch (err) {
+    console.error(`Error inserting data: ${err.message}`);
+    res.status(500).send(`Error inserting data: ${err.message}`);
+  }
+});
+
+const listchatID = async () => {
+  const chatIDs = await ListChatID.find({}, { _id: 0, idChat: 1 });
+  return chatIDs.map((doc) => doc.idChat);
+};
+
+app.post("/text", async (req, res) => {
+  try {
+    const { duLieu } = req.body;
+    const chatIDs = await ListChatID.find({});
+
+    const listID = chatIDs.map((item) => item.chatID);
+    console.log(listID);
+
+    for (let i = 0; i < listID.length; i++) {
+      bot.sendMessage(listID[i], duLieu);
+    }
+
+    res.render("index", { options: {} });
   } catch (err) {
     console.error(`Error inserting data: ${err.message}`);
     res.status(500).send(`Error inserting data: ${err.message}`);
