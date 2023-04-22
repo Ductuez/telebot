@@ -1,6 +1,6 @@
 const express = require("express");
 const TelegramBot = require("node-telegram-bot-api");
-const token = "6214124878:AAGFFNSs1Kng4K1syskjxK9eEvyvPV9tMak";
+const token = "5947988756:AAFeV5JHHwNmowx2HFSLhAG_MWZ3hrjBswI";
 
 // const token = "6212119379:AAEi1kYrKksfMziyfd_p7B7E203sniB09Gg";
 const mongoose = require("mongoose");
