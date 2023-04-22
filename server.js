@@ -4,9 +4,9 @@ const fs = require("fs");
 
 const request = require("request");
 const multer = require("multer");
-// const token = "5947988756:AAFeV5JHHwNmowx2HFSLhAG_MWZ3hrjBswI";
+const token = "5947988756:AAFeV5JHHwNmowx2HFSLhAG_MWZ3hrjBswI";
 
-const token = "6212119379:AAEi1kYrKksfMziyfd_p7B7E203sniB09Gg";
+// const token = "6212119379:AAEi1kYrKksfMziyfd_p7B7E203sniB09Gg";
 const mongoose = require("mongoose");
 const ejs = require("ejs");
 
