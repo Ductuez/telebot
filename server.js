@@ -1,8 +1,12 @@
 const express = require("express");
 const TelegramBot = require("node-telegram-bot-api");
-const token = "5947988756:AAFeV5JHHwNmowx2HFSLhAG_MWZ3hrjBswI";
+const fs = require("fs");
 
-// const token = "6212119379:AAEi1kYrKksfMziyfd_p7B7E203sniB09Gg";
+const request = require("request");
+const multer = require("multer");
+// const token = "5947988756:AAFeV5JHHwNmowx2HFSLhAG_MWZ3hrjBswI";
+
+const token = "6212119379:AAEi1kYrKksfMziyfd_p7B7E203sniB09Gg";
 const mongoose = require("mongoose");
 const ejs = require("ejs");
 
@@ -19,6 +23,7 @@ app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
+const upload = multer({ dest: "uploads/" });
 
 const connectDB = () => {
   try {
@@ -81,7 +86,7 @@ bot.on("callback_query", async (query) => {
     });
 });
 
-const themChatID = async (chatId) => {
+const themChatID = async (chatId, username) => {
   try {
     const doc = await ListChatID.findOne({ chatID: chatId });
 
@@ -89,7 +94,7 @@ const themChatID = async (chatId) => {
       console.log(`Chat ID '${chatId}' đã tồn tại trong cơ sở dữ liệu`);
       return doc;
     } else {
-      const newDoc = new ListChatID({ chatID: chatId });
+      const newDoc = new ListChatID({ chatID: chatId, username });
       await newDoc.save();
       console.log(`Thêm chat ID '${chatId}' vào cơ sở dữ liệu thành công`);
       return newDoc;
@@ -102,7 +107,9 @@ const themChatID = async (chatId) => {
 
 bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
-  themChatID(chatId);
+  const username = msg.chat.username;
+
+  themChatID(chatId, username);
 
   if (msg.text === "/start") {
     try {
@@ -131,10 +138,6 @@ bot.on("message", async (msg) => {
           bot.sendMessage(msg.chat.id, "Bạn muốn hỏi kèo nào: ", {
             reply_markup,
           });
-
-          if (!listChatID.includes(msg.chat.id)) {
-            listChatID.push(msg.chat.id);
-          }
         });
     } catch (err) {
       console.error(err.message);
@@ -175,18 +178,13 @@ app.post("/", async (req, res) => {
   }
 });
 
-const listchatID = async () => {
-  const chatIDs = await ListChatID.find({}, { _id: 0, idChat: 1 });
-  return chatIDs.map((doc) => doc.idChat);
-};
-
 app.post("/text", async (req, res) => {
   try {
-    const { duLieu } = req.body;
     const chatIDs = await ListChatID.find({});
-
     const listID = chatIDs.map((item) => item.chatID);
-    console.log(listID);
+
+    const { duLieu } = req.body;
+    console.log(duLieu, "req.body");
 
     for (let i = 0; i < listID.length; i++) {
       bot.sendMessage(listID[i], decodeURIComponent(duLieu));
@@ -196,6 +194,37 @@ app.post("/text", async (req, res) => {
   } catch (err) {
     console.error(`Error inserting data: ${err.message}`);
     res.status(500).send(`Error inserting data: ${err.message}`);
+  }
+});
+
+app.post("/upload", upload.single("image"), async (req, res) => {
+  try {
+    const chatIDs = await ListChatID.find({});
+    const listID = chatIDs.map((item) => item.chatID);
+    const file = req.file;
+
+    if (!file) {
+      console.log("Không tìm thấy file");
+      return res.status(400).send("Không tìm thấy file");
+    }
+
+    let buffer;
+    if (file.buffer) {
+      buffer = Buffer.from(file.buffer);
+    } else {
+      buffer = fs.readFileSync(file.path);
+    }
+
+    console.log(buffer);
+
+    for (let i = 0; i < listID.length; i++) {
+      bot.sendPhoto(listID[i], buffer, { caption: "" });
+    }
+
+    res.send("Đã gửi thành công");
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Lỗi server");
   }
 });
 
